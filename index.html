@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Darts 501 Checkout Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 0.95em;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .score-input-section {
+            background: #f5f5f5;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #555;
+            font-size: 0.95em;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.1em;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #d32f2f;
+        }
+
+        .dart-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .current-score {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
+            color: white;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .current-score h2 {
+            font-size: 1.3em;
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+
+        .current-score .score {
+            font-size: 3em;
+            font-weight: bold;
+        }
+
+        .combinations {
+            margin-top: 30px;
+        }
+
+        .combinations h3 {
+            color: #d32f2f;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+            border-bottom: 3px solid #d32f2f;
+            padding-bottom: 10px;
+        }
+
+        .checkout-option {
+            background: #f9f9f9;
+            border-left: 4px solid #d32f2f;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .checkout-option:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .checkout-option .combo {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .checkout-option .details {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .no-checkout {
+            text-align: center;
+            padding: 30px;
+            color: #999;
+            font-style: italic;
+        }
+
+        .reset-btn {
+            width: 100%;
+            padding: 12px;
+            background: #666;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 20px;
+        }
+
+        .reset-btn:hover {
+            background: #555;
+        }
+
+        .dart-label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .dart-number {
+            background: #d32f2f;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+
+        .dart-section {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .dart-input-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .dart-display {
+            font-size: 3em;
+            font-weight: bold;
+            text-align: center;
+            color: #d32f2f;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            margin: 15px 0;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .number-pad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .num-btn {
+            padding: 12px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .num-btn:hover {
+            background: #f5f5f5;
+            border-color: #d32f2f;
+            transform: scale(1.05);
+        }
+
+        .num-btn:active {
+            transform: scale(0.95);
+        }
+
+        .clear-btn {
+            background: #ff9800;
+            color: white;
+            border-color: #ff9800;
+        }
+
+        .clear-btn:hover {
+            background: #f57c00;
+            border-color: #f57c00;
+        }
+
+        .submit-btn {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        .submit-btn:hover {
+            background: #388E3C;
+            border-color: #388E3C;
+        }
+
+        .dart-input-container.submitted {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .dart-input-container.submitted .dart-display {
+            background: #e8f5e9;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+            
+            .current-score .score {
+                font-size: 2.5em;
+            }
+
+            .num-btn {
+                padding: 10px;
+                font-size: 1.1em;
+            }
+
+            .dart-display {
+                font-size: 2.5em;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Darts 501 Checkout</h1>
+            <p>Find the best closing combinations</p>
+        </div>
+
+        <div class="content">
+            <div class="score-input-section">
+                <div class="input-group">
+                    <label for="startingScore">Starting Score (2-170)</label>
+                    <input type="number" id="startingScore" min="2" max="170" value="170" placeholder="Enter score to close from" />
+                </div>
+
+                <div class="dart-section">
+                    <div class="dart-input-container">
+                        <label>
+                            <span class="dart-label">
+                                <span class="dart-number">1</span> Dart 1 Score
+                            </span>
+                        </label>
+                        <div class="dart-display" id="dart1Display">0</div>
+                        <div class="number-pad" id="numberPad1">
+                            <button class="num-btn" data-dart="1" data-digit="1">1</button>
+                            <button class="num-btn" data-dart="1" data-digit="2">2</button>
+                            <button class="num-btn" data-dart="1" data-digit="3">3</button>
+                            <button class="num-btn" data-dart="1" data-digit="4">4</button>
+                            <button class="num-btn" data-dart="1" data-digit="5">5</button>
+                            <button class="num-btn" data-dart="1" data-digit="6">6</button>
+                            <button class="num-btn" data-dart="1" data-digit="7">7</button>
+                            <button class="num-btn" data-dart="1" data-digit="8">8</button>
+                            <button class="num-btn" data-dart="1" data-digit="9">9</button>
+                            <button class="num-btn clear-btn" data-dart="1" data-action="clear">Clear</button>
+                            <button class="num-btn" data-dart="1" data-digit="0">0</button>
+                            <button class="num-btn submit-btn" data-dart="1" data-action="submit">✓</button>
+                        </div>
+                    </div>
+
+                    <div class="dart-input-container" id="dart2Container" style="display: none;">
+                        <label>
+                            <span class="dart-label">
+                                <span class="dart-number">2</span> Dart 2 Score
+                            </span>
+                        </label>
+                        <div class="dart-display" id="dart2Display">0</div>
+                        <div class="number-pad" id="numberPad2">
+                            <button class="num-btn" data-dart="2" data-digit="1">1</button>
+                            <button class="num-btn" data-dart="2" data-digit="2">2</button>
+                            <button class="num-btn" data-dart="2" data-digit="3">3</button>
+                            <button class="num-btn" data-dart="2" data-digit="4">4</button>
+                            <button class="num-btn" data-dart="2" data-digit="5">5</button>
+                            <button class="num-btn" data-dart="2" data-digit="6">6</button>
+                            <button class="num-btn" data-dart="2" data-digit="7">7</button>
+                            <button class="num-btn" data-dart="2" data-digit="8">8</button>
+                            <button class="num-btn" data-dart="2" data-digit="9">9</button>
+                            <button class="num-btn clear-btn" data-dart="2" data-action="clear">Clear</button>
+                            <button class="num-btn" data-dart="2" data-digit="0">0</button>
+                            <button class="num-btn submit-btn" data-dart="2" data-action="submit">✓</button>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="reset-btn" onclick="resetCalculator()">Reset All</button>
+            </div>
+
+            <div class="current-score">
+                <h2>Current Score</h2>
+                <div class="score" id="currentScore">---</div>
+            </div>
+
+            <div class="combinations">
+                <h3>Top Checkout Options</h3>
+                <div id="checkoutOptions"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 3-dart checkout combinations (prioritizing D20, D16, D10, D8)
+        const checkoutCombinations = {
+            2: [['D1', 'Double 1']],
+            3: [['1 - D1', '1, Double 1']],
+            4: [['D2', 'Double 2']],
+            5: [['1 - D2', '1, Double 2'], ['3 - D1', '3, Double 1']],
+            6: [['D3', 'Double 3']],
+            7: [['3 - D2', '3, Double 2'], ['5 - D1', '5, Double 1']],
+            8: [['D4', 'Double 4']],
+            9: [['1 - D4', '1, Double 4'], ['5 - D2', '5, Double 2']],
+            10: [['D5', 'Double 5']],
+            11: [['3 - D4', '3, Double 4'], ['1 - D5', '1, Double 5']],
+            12: [['D6', 'Double 6']],
+            13: [['5 - D4', '5, Double 4'], ['3 - D5', '3, Double 5']],
+            14: [['D7', 'Double 7']],
+            15: [['7 - D4', '7, Double 4'], ['5 - D5', '5, Double 5']],
+            16: [['D8', 'Double 8']],
+            17: [['9 - D4', '9, Double 4'], ['1 - D8', '1, Double 8']],
+            18: [['D9', 'Double 9'], ['2 - D8', '2, Double 8']],
+            19: [['3 - D8', '3, Double 8'], ['7 - D6', '7, Double 6']],
+            20: [['D10', 'Double 10'], ['4 - D8', '4, Double 8']],
+            21: [['5 - D8', '5, Double 8'], ['1 - D10', '1, Double 10']],
+            22: [['D11', 'Double 11'], ['6 - D8', '6, Double 8'], ['2 - D10', '2, Double 10']],
+            23: [['7 - D8', '7, Double 8'], ['3 - D10', '3, Double 10']],
+            24: [['D12', 'Double 12'], ['8 - D8', '8, Double 8'], ['4 - D10', '4, Double 10']],
+            25: [['9 - D8', '9, Double 8'], ['5 - D10', '5, Double 10']],
+            26: [['D13', 'Double 13'], ['10 - D8', '10, Double 8'], ['6 - D10', '6, Double 10']],
+            27: [['11 - D8', '11, Double 8'], ['7 - D10', '7, Double 10']],
+            28: [['D14', 'Double 14'], ['12 - D8', '12, Double 8'], ['8 - D10', '8, Double 10']],
+            29: [['13 - D8', '13, Double 8'], ['9 - D10', '9, Double 10']],
+            30: [['D15', 'Double 15'], ['14 - D8', '14, Double 8'], ['10 - D10', '10, Double 10']],
+            31: [['15 - D8', '15, Double 8'], ['11 - D10', '11, Double 10']],
+            32: [['D16', 'Double 16'], ['16 - D8', '16, Double 8'], ['12 - D10', '12, Double 10']],
+            33: [['1 - D16', '1, Double 16'], ['17 - D8', '17, Double 8'], ['13 - D10', '13, Double 10']],
+            34: [['2 - D16', '2, Double 16'], ['18 - D8', '18, Double 8'], ['14 - D10', '14, Double 10'], ['D17', 'Double 17']],
+            35: [['3 - D16', '3, Double 16'], ['19 - D8', '19, Double 8'], ['15 - D10', '15, Double 10']],
+            36: [['4 - D16', '4, Double 16'], ['20 - D8', '20, Double 8'], ['16 - D10', '16, Double 10'], ['D18', 'Double 18']],
+            37: [['5 - D16', '5, Double 16'], ['17 - D10', '17, Double 10']],
+            38: [['6 - D16', '6, Double 16'], ['18 - D10', '18, Double 10'], ['D19', 'Double 19']],
+            39: [['7 - D16', '7, Double 16'], ['19 - D10', '19, Double 10']],
+            40: [['D20', 'Double 20'], ['8 - D16', '8, Double 16'], ['20 - D10', '20, Double 10']],
+            41: [['9 - D16', '9, Double 16'], ['1 - D20', '1, Double 20']],
+            42: [['10 - D16', '10, Double 16'], ['2 - D20', '2, Double 20']],
+            43: [['11 - D16', '11, Double 16'], ['3 - D20', '3, Double 20']],
+            44: [['12 - D16', '12, Double 16'], ['4 - D20', '4, Double 20']],
+            45: [['13 - D16', '13, Double 16'], ['5 - D20', '5, Double 20']],
+            46: [['14 - D16', '14, Double 16'], ['6 - D20', '6, Double 20']],
+            47: [['15 - D16', '15, Double 16'], ['7 - D20', '7, Double 20']],
+            48: [['16 - D16', '16, Double 16'], ['8 - D20', '8, Double 20']],
+            49: [['17 - D16', '17, Double 16'], ['9 - D20', '9, Double 20']],
+            50: [['10 - D20', '10, Double 20'], ['18 - D16', '18, Double 16'], ['Bull', 'Bullseye']],
+            51: [['11 - D20', '11, Double 20'], ['19 - D16', '19, Double 16']],
+            52: [['12 - D20', '12, Double 20'], ['20 - D16', '20, Double 16']],
+            53: [['13 - D20', '13, Double 20'], ['17 - D18', '17, Double 18']],
+            54: [['14 - D20', '14, Double 20'], ['18 - D18', '18, Double 18']],
+            55: [['15 - D20', '15, Double 20'], ['19 - D18', '19, Double 18']],
+            56: [['16 - D20', '16, Double 20'], ['20 - D18', '20, Double 18']],
+            57: [['17 - D20', '17, Double 20'], ['19 - D19', '19, Double 19']],
+            58: [['18 - D20', '18, Double 20'], ['20 - D19', '20, Double 19']],
+            59: [['19 - D20', '19, Double 20'], ['17 - D21', '17, Double 21']],
+            60: [['20 - D20', '20, Double 20']],
+            61: [['T15 - D8', 'Treble 15, Double 8'], ['25 - D18', 'Bull, Double 18']],
+            62: [['T10 - D16', 'Treble 10, Double 16'], ['10 - Bull', '10, Bullseye']],
+            63: [['T13 - D12', 'Treble 13, Double 12'], ['13 - Bull', '13, Bullseye']],
+            64: [['T16 - D8', 'Treble 16, Double 8'], ['14 - Bull', '14, Bullseye']],
+            65: [['T15 - D10', 'Treble 15, Double 10'], ['25 - D20', 'Bull, Double 20'], ['T11 - D16', 'Treble 11, Double 16']],
+            66: [['T10 - D18', 'Treble 10, Double 18'], ['T16 - D9', 'Treble 16, Double 9']],
+            67: [['T17 - D8', 'Treble 17, Double 8'], ['17 - Bull', '17, Bullseye'], ['T9 - D20', 'Treble 9, Double 20']],
+            68: [['T20 - D4', 'Treble 20, Double 4'], ['T16 - D10', 'Treble 16, Double 10']],
+            69: [['T19 - D6', 'Treble 19, Double 6'], ['19 - Bull', '19, Bullseye'], ['T11 - D18', 'Treble 11, Double 18']],
+            70: [['T18 - D8', 'Treble 18, Double 8'], ['20 - Bull', '20, Bullseye'], ['T10 - D20', 'Treble 10, Double 20']],
+            71: [['T13 - D16', 'Treble 13, Double 16'], ['T17 - D10', 'Treble 17, Double 10']],
+            72: [['T16 - D12', 'Treble 16, Double 12'], ['T12 - D18', 'Treble 12, Double 18']],
+            73: [['T19 - D8', 'Treble 19, Double 8'], ['T15 - D14', 'Treble 15, Double 14']],
+            74: [['T14 - D16', 'Treble 14, Double 16'], ['T18 - D10', 'Treble 18, Double 10']],
+            75: [['T17 - D12', 'Treble 17, Double 12'], ['T15 - D15', 'Treble 15, Double 15']],
+            76: [['T20 - D8', 'Treble 20, Double 8'], ['T16 - D14', 'Treble 16, Double 14']],
+            77: [['T19 - D10', 'Treble 19, Double 10'], ['T15 - D16', 'Treble 15, Double 16']],
+            78: [['T18 - D12', 'Treble 18, Double 12'], ['T14 - D18', 'Treble 14, Double 18']],
+            79: [['T19 - D11', 'Treble 19, Double 11'], ['T13 - D20', 'Treble 13, Double 20']],
+            80: [['T20 - D10', 'Treble 20, Double 10'], ['T16 - D16', 'Treble 16, Double 16']],
+            81: [['T19 - D12', 'Treble 19, Double 12'], ['T15 - D18', 'Treble 15, Double 18']],
+            82: [['T14 - D20', 'Treble 14, Double 20'], ['Bull - D16', 'Bullseye, Double 16']],
+            83: [['T17 - D16', 'Treble 17, Double 16'], ['T19 - D13', 'Treble 19, Double 13']],
+            84: [['T20 - D12', 'Treble 20, Double 12'], ['T16 - D18', 'Treble 16, Double 18']],
+            85: [['T15 - D20', 'Treble 15, Double 20'], ['T19 - D14', 'Treble 19, Double 14']],
+            86: [['T18 - D16', 'Treble 18, Double 16'], ['T14 - D22', 'Treble 14, Double 22']],
+            87: [['T17 - D18', 'Treble 17, Double 18'], ['T19 - D15', 'Treble 19, Double 15']],
+            88: [['T20 - D14', 'Treble 20, Double 14'], ['T16 - D20', 'Treble 16, Double 20']],
+            89: [['T19 - D16', 'Treble 19, Double 16'], ['T15 - D22', 'Treble 15, Double 22']],
+            90: [['T20 - D15', 'Treble 20, Double 15'], ['T18 - D18', 'Treble 18, Double 18']],
+            91: [['T17 - D20', 'Treble 17, Double 20'], ['T19 - D17', 'Treble 19, Double 17']],
+            92: [['T20 - D16', 'Treble 20, Double 16'], ['T16 - D22', 'Treble 16, Double 22']],
+            93: [['T19 - D18', 'Treble 19, Double 18'], ['T17 - D21', 'Treble 17, Double 21']],
+            94: [['T18 - D20', 'Treble 18, Double 20'], ['T14 - Bull', 'Treble 14, Bullseye']],
+            95: [['T19 - D19', 'Treble 19, Double 19'], ['T20 - D17.5', 'Treble 20, Double 17.5']],
+            96: [['T20 - D18', 'Treble 20, Double 18'], ['T16 - Bull', 'Treble 16, Bullseye']],
+            97: [['T19 - D20', 'Treble 19, Double 20'], ['T17 - Bull', 'Treble 17, Bullseye']],
+            98: [['T20 - D19', 'Treble 20, Double 19'], ['T18 - D22', 'Treble 18, Double 22']],
+            99: [['T19 - D21', 'Treble 19, Double 21'], ['T20 - D19.5', 'Treble 20, Double 19.5']],
+            100: [['T20 - D20', 'Treble 20, Double 20'], ['T18 - Bull', 'Treble 18, Bullseye']],
+            101: [['T17 - 10 - D20', 'Treble 17, 10, Double 20'], ['T20 - 1 - D20', 'Treble 20, 1, Double 20']],
+            102: [['T20 - 10 - D16', 'Treble 20, 10, Double 16'], ['T19 - 5 - D20', 'Treble 19, 5, Double 20']],
+            103: [['T20 - 3 - D20', 'Treble 20, 3, Double 20'], ['T17 - 12 - D20', 'Treble 17, 12, Double 20']],
+            104: [['T20 - 12 - D16', 'Treble 20, 12, Double 16'], ['T18 - 10 - D20', 'Treble 18, 10, Double 20']],
+            105: [['T20 - 5 - D20', 'Treble 20, 5, Double 20'], ['T19 - 8 - D20', 'Treble 19, 8, Double 20']],
+            106: [['T20 - 14 - D16', 'Treble 20, 14, Double 16'], ['T20 - 6 - D20', 'Treble 20, 6, Double 20']],
+            107: [['T20 - 7 - D20', 'Treble 20, 7, Double 20'], ['T19 - 10 - D20', 'Treble 19, 10, Double 20']],
+            108: [['T20 - 16 - D16', 'Treble 20, 16, Double 16'], ['T20 - 8 - D20', 'Treble 20, 8, Double 20']],
+            109: [['T20 - 9 - D20', 'Treble 20, 9, Double 20'], ['T19 - 12 - D20', 'Treble 19, 12, Double 20']],
+            110: [['T20 - 18 - D16', 'Treble 20, 18, Double 16'], ['T20 - 10 - D20', 'Treble 20, 10, Double 20'], ['T20 - Bull', 'Treble 20, Bullseye']],
+            111: [['T20 - 11 - D20', 'Treble 20, 11, Double 20'], ['T19 - 14 - D20', 'Treble 19, 14, Double 20']],
+            112: [['T20 - 20 - D16', 'Treble 20, 20, Double 16'], ['T20 - 12 - D20', 'Treble 20, 12, Double 20']],
+            113: [['T20 - 13 - D20', 'Treble 20, 13, Double 20'], ['T19 - 16 - D20', 'Treble 19, 16, Double 20']],
+            114: [['T20 - 14 - D20', 'Treble 20, 14, Double 20'], ['T18 - 20 - D20', 'Treble 18, 20, Double 20']],
+            115: [['T20 - 15 - D20', 'Treble 20, 15, Double 20'], ['T19 - 18 - D20', 'Treble 19, 18, Double 20']],
+            116: [['T20 - 16 - D20', 'Treble 20, 16, Double 20'], ['T19 - 19 - D20', 'Treble 19, 19, Double 20']],
+            117: [['T20 - 17 - D20', 'Treble 20, 17, Double 20'], ['T19 - 20 - D20', 'Treble 19, 20, Double 20']],
+            118: [['T20 - 18 - D20', 'Treble 20, 18, Double 20'], ['T18 - Bull', 'Treble 18, Bullseye']],
+            119: [['T20 - 19 - D20', 'Treble 20, 19, Double 20'], ['T19 - 10 - Bull', 'Treble 19, 10, Bullseye']],
+            120: [['T20 - 20 - D20', 'Treble 20, 20, Double 20'], ['T20 - T20', 'Treble 20, Treble 20']],
+            121: [['T20 - T17 - D5', 'Treble 20, Treble 17, Double 5'], ['T17 - T20 - D5', 'Treble 17, Treble 20, Double 5']],
+            122: [['T18 - T20 - D4', 'Treble 18, Treble 20, Double 4'], ['T20 - T18 - D4', 'Treble 20, Treble 18, Double 4']],
+            123: [['T19 - T16 - D9', 'Treble 19, Treble 16, Double 9'], ['T20 - T13 - D12', 'Treble 20, Treble 13, Double 12']],
+            124: [['T20 - T16 - D8', 'Treble 20, Treble 16, Double 8'], ['T20 - T14 - D10', 'Treble 20, Treble 14, Double 10']],
+            125: [['T20 - T15 - D10', 'Treble 20, Treble 15, Double 10'], ['25 - T20 - D20', 'Bull, Treble 20, Double 20']],
+            126: [['T19 - T19 - D6', 'Treble 19, Treble 19, Double 6'], ['T20 - T14 - D12', 'Treble 20, Treble 14, Double 12']],
+            127: [['T20 - T17 - D8', 'Treble 20, Treble 17, Double 8'], ['T19 - T16 - D10', 'Treble 19, Treble 16, Double 10']],
+            128: [['T20 - T18 - D7', 'Treble 20, Treble 18, Double 7'], ['T18 - T14 - D16', 'Treble 18, Treble 14, Double 16']],
+            129: [['T19 - T20 - D6', 'Treble 19, Treble 20, Double 6'], ['T20 - T19 - D6', 'Treble 20, Treble 19, Double 6']],
+            130: [['T20 - T20 - D5', 'Treble 20, Treble 20, Double 5'], ['T20 - T18 - D8', 'Treble 20, Treble 18, Double 8']],
+            131: [['T20 - T13 - D16', 'Treble 20, Treble 13, Double 16'], ['T19 - T14 - D16', 'Treble 19, Treble 14, Double 16']],
+            132: [['T20 - T16 - D12', 'Treble 20, Treble 16, Double 12'], ['25 - T19 - D20', 'Bull, Treble 19, Double 20']],
+            133: [['T20 - T19 - D8', 'Treble 20, Treble 19, Double 8'], ['T19 - T20 - D8', 'Treble 19, Treble 20, Double 8']],
+            134: [['T20 - T14 - D16', 'Treble 20, Treble 14, Double 16'], ['T20 - T16 - D13', 'Treble 20, Treble 16, Double 13']],
+            135: [['T20 - T15 - D15', 'Treble 20, Treble 15, Double 15'], ['25 - T20 - Bull', 'Bull, Treble 20, Bullseye']],
+            136: [['T20 - T20 - D8', 'Treble 20, Treble 20, Double 8'], ['T20 - T16 - D14', 'Treble 20, Treble 16, Double 14']],
+            137: [['T20 - T19 - D10', 'Treble 20, Treble 19, Double 10'], ['T19 - T20 - D10', 'Treble 19, Treble 20, Double 10']],
+            138: [['T20 - T18 - D12', 'Treble 20, Treble 18, Double 12'], ['T20 - T16 - D15', 'Treble 20, Treble 16, Double 15']],
+            139: [['T20 - T19 - D11', 'Treble 20, Treble 19, Double 11'], ['T19 - T14 - D20', 'Treble 19, Treble 14, Double 20']],
+            140: [['T20 - T20 - D10', 'Treble 20, Treble 20, Double 10'], ['T20 - T16 - D16', 'Treble 20, Treble 16, Double 16']],
+            141: [['T20 - T19 - D12', 'Treble 20, Treble 19, Double 12'], ['T20 - T15 - D18', 'Treble 20, Treble 15, Double 18']],
+            142: [['T20 - T14 - D20', 'Treble 20, Treble 14, Double 20'], ['T20 - T18 - D14', 'Treble 20, Treble 18, Double 14']],
+            143: [['T20 - T17 - D16', 'Treble 20, Treble 17, Double 16'], ['T19 - T18 - D14', 'Treble 19, Treble 18, Double 14']],
+            144: [['T20 - T20 - D12', 'Treble 20, Treble 20, Double 12'], ['T20 - T16 - D18', 'Treble 20, Treble 16, Double 18']],
+            145: [['T20 - T19 - D14', 'Treble 20, Treble 19, Double 14'], ['T20 - T15 - D20', 'Treble 20, Treble 15, Double 20']],
+            146: [['T20 - T18 - D16', 'Treble 20, Treble 18, Double 16'], ['T19 - T19 - D14', 'Treble 19, Treble 19, Double 14']],
+            147: [['T20 - T17 - D18', 'Treble 20, Treble 17, Double 18'], ['T19 - T18 - D16', 'Treble 19, Treble 18, Double 16']],
+            148: [['T20 - T20 - D14', 'Treble 20, Treble 20, Double 14'], ['T20 - T16 - D20', 'Treble 20, Treble 16, Double 20']],
+            149: [['T20 - T19 - D16', 'Treble 20, Treble 19, Double 16'], ['T20 - T17 - D19', 'Treble 20, Treble 17, Double 19']],
+            150: [['T20 - T18 - D18', 'Treble 20, Treble 18, Double 18'], ['T20 - T20 - D15', 'Treble 20, Treble 20, Double 15']],
+            151: [['T20 - T17 - D20', 'Treble 20, Treble 17, Double 20'], ['T20 - T19 - D17', 'Treble 20, Treble 19, Double 17']],
+            152: [['T20 - T20 - D16', 'Treble 20, Treble 20, Double 16'], ['T20 - T16 - Bull', 'Treble 20, Treble 16, Bullseye']],
+            153: [['T20 - T19 - D18', 'Treble 20, Treble 19, Double 18'], ['T19 - T20 - D18', 'Treble 19, Treble 20, Double 18']],
+            154: [['T20 - T18 - D20', 'Treble 20, Treble 18, Double 20'], ['T18 - T20 - D20', 'Treble 18, Treble 20, Double 20']],
+            155: [['T20 - T19 - D19', 'Treble 20, Treble 19, Double 19'], ['T19 - T20 - D19', 'Treble 19, Treble 20, Double 19']],
+            156: [['T20 - T20 - D18', 'Treble 20, Treble 20, Double 18'], ['T20 - T18 - Bull', 'Treble 20, Treble 18, Bullseye']],
+            157: [['T20 - T19 - D20', 'Treble 20, Treble 19, Double 20'], ['T19 - T20 - D20', 'Treble 19, Treble 20, Double 20']],
+            158: [['T20 - T20 - D19', 'Treble 20, Treble 20, Double 19'], ['T18 - T18 - Bull', 'Treble 18, Treble 18, Bullseye']],
+            159: [['T20 - T19 - D21', 'Treble 20, Treble 19, Double 21'], ['T19 - T20 - D21', 'Treble 19, Treble 20, Double 21']],
+            160: [['T20 - T20 - D20', 'Treble 20, Treble 20, Double 20'], ['T20 - T20 - D20', 'Treble 20, Treble 20, Double 20']],
+            161: [['T20 - T17 - Bull', 'Treble 20, Treble 17, Bullseye'], ['T17 - T20 - Bull', 'Treble 17, Treble 20, Bullseye']],
+            164: [['T20 - T18 - Bull', 'Treble 20, Treble 18, Bullseye'], ['T18 - T20 - Bull', 'Treble 18, Treble 20, Bullseye']],
+            167: [['T20 - T19 - Bull', 'Treble 20, Treble 19, Bullseye'], ['T19 - T20 - Bull', 'Treble 19, Treble 20, Bullseye']],
+            170: [['T20 - T20 - Bull', 'Treble 20, Treble 20, Bullseye'], ['T20 - T20 - Bull', 'Treble 20, Treble 20, Bullseye']]        };
+
+        const startingScoreInput = document.getElementById('startingScore');
+        const currentScoreDisplay = document.getElementById('currentScore');
+        const checkoutOptionsDiv = document.getElementById('checkoutOptions');
+        const dart1Display = document.getElementById('dart1Display');
+        const dart2Display = document.getElementById('dart2Display');
+        const dart2Container = document.getElementById('dart2Container');
+
+        let startingScore = 170;
+        let dart1 = 0;
+        let dart2 = 0;
+        let dart1Submitted = false;
+        let dart2Submitted = false;
+        let currentDart1Input = '';
+        let currentDart2Input = '';
+
+        function addDigit(dartNum, digit) {
+            if (dartNum === 1 && !dart1Submitted) {
+                currentDart1Input += digit;
+                const value = parseInt(currentDart1Input);
+                if (value <= 60) {
+                    dart1Display.textContent = currentDart1Input;
+                } else {
+                    // Don't allow values over 60
+                    currentDart1Input = currentDart1Input.slice(0, -1);
+                }
+            } else if (dartNum === 2 && !dart2Submitted) {
+                currentDart2Input += digit;
+                const value = parseInt(currentDart2Input);
+                if (value <= 60) {
+                    dart2Display.textContent = currentDart2Input;
+                } else {
+                    // Don't allow values over 60
+                    currentDart2Input = currentDart2Input.slice(0, -1);
+                }
+            }
+        }
+
+        function clearDart(dartNum) {
+            if (dartNum === 1 && !dart1Submitted) {
+                currentDart1Input = '';
+                dart1Display.textContent = '0';
+            } else if (dartNum === 2 && !dart2Submitted) {
+                currentDart2Input = '';
+                dart2Display.textContent = '0';
+            }
+        }
+
+        function submitDart(dartNum) {
+            if (dartNum === 1 && !dart1Submitted) {
+                dart1 = parseInt(currentDart1Input) || 0;
+                dart1Submitted = true;
+                document.getElementById('numberPad1').parentElement.classList.add('submitted');
+                dart2Container.style.display = 'block';
+                updateDisplay();
+            } else if (dartNum === 2 && !dart2Submitted) {
+                dart2 = parseInt(currentDart2Input) || 0;
+                dart2Submitted = true;
+                document.getElementById('numberPad2').parentElement.classList.add('submitted');
+                updateDisplay();
+            }
+        }
+
+        function updateDisplay() {
+            const remainingScore = startingScore - dart1 - dart2;
+            
+            // Update current score display
+            if (startingScore && startingScore > 0) {
+                currentScoreDisplay.textContent = remainingScore;
+            } else {
+                currentScoreDisplay.textContent = '---';
+            }
+
+            // Update checkout options
+            displayCheckoutOptions(remainingScore);
+        }
+
+        function displayCheckoutOptions(score) {
+            checkoutOptionsDiv.innerHTML = '';
+
+            if (!score || score < 2 || score > 170) {
+                checkoutOptionsDiv.innerHTML = '<div class="no-checkout">Enter a valid score between 2 and 170</div>';
+                return;
+            }
+
+            const combinations = checkoutCombinations[score];
+
+            if (!combinations || combinations.length === 0) {
+                checkoutOptionsDiv.innerHTML = '<div class="no-checkout">No checkout available for this score</div>';
+                return;
+            }
+
+            // Display up to 5 combinations
+            const displayCount = Math.min(5, combinations.length);
+            for (let i = 0; i < displayCount; i++) {
+                const combo = combinations[i];
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'checkout-option';
+                
+                optionDiv.innerHTML = `
+                    <div class="combo">${combo[0]}</div>
+                    <div class="details">${combo[1]}</div>
+                `;
+                
+                checkoutOptionsDiv.appendChild(optionDiv);
+            }
+        }
+
+        // Event listeners for starting score input
+        startingScoreInput.addEventListener('input', (e) => {
+            startingScore = parseInt(e.target.value) || 0;
+            updateDisplay();
+        });
+
+        // Add event listeners to all number pad buttons
+        document.querySelectorAll('.num-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const dartNum = parseInt(button.getAttribute('data-dart'));
+                const digit = button.getAttribute('data-digit');
+                const action = button.getAttribute('data-action');
+
+                if (digit) {
+                    addDigit(dartNum, digit);
+                } else if (action === 'clear') {
+                    clearDart(dartNum);
+                } else if (action === 'submit') {
+                    submitDart(dartNum);
+                }
+            });
+        });
+
+        function resetCalculator() {
+            startingScoreInput.value = '170';
+            startingScore = 170;
+            dart1 = 0;
+            dart2 = 0;
+            dart1Submitted = false;
+            dart2Submitted = false;
+            currentDart1Input = '';
+            currentDart2Input = '';
+            dart1Display.textContent = '0';
+            dart2Display.textContent = '0';
+            document.getElementById('numberPad1').parentElement.classList.remove('submitted');
+            document.getElementById('numberPad2').parentElement.classList.remove('submitted');
+            dart2Container.style.display = 'none';
+            updateDisplay();
+        }
+
+        // Initialize on load - show checkout options for starting score
+        updateDisplay();
+    </script>
+</body>
+</html>
